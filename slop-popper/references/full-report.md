@@ -1,0 +1,10 @@
+Full report sections for `/deslop-full` and `/deslop-since`, in this order:
+- **Style sources used** (or none found)
+- **Changed files**
+- **Findings fixed by category** (counts, with one or two examples each)
+- **Tool results before and after** (lint, types, dead code)
+- **Verification run** (tests and commands, with results)
+- **Needs further review:** numbered and keyed as described under Report Format in SKILL.md.
+- **Closed:** approved and rejected keys with their retired R IDs.
+- **Kept items:** findings skipped because the keep list covers them, with their K IDs (`K1`, `K2`) and keys.
+- **Remaining risks**

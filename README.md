@@ -15,6 +15,14 @@ An agent skill that cleans AI-generated slop out of working code without changin
 - **Follows your project:** it reads your style guide, lint configs, and a keep list (`KEEP.md` or `.deslopkeep`) of things it must never touch.
 - **Never commits for you,** and it never copies secret values into its reports.
 
+## What's new in v2
+
+- **Uses fewer tokens.** The skill is split into a short core `SKILL.md` plus reference files that load only when a command needs them. The core is less than half its old size.
+- **`/deslop` stops when there's nothing to clean.** With no staged or uncommitted changes, it says so and stops.
+- **`/deslop-approve` works without a saved list.** It re-scans the files the item keys name, and asks for a scope if there are none.
+
+See the [changelog](CHANGELOG.md) for the full list.
+
 ## Commands
 
 | Command | What it does |
@@ -25,11 +33,11 @@ An agent skill that cleans AI-generated slop out of working code without changin
 | `/deslop-review` | Reviews someone else's cleanup without editing |
 | `/deslop-approve <IDs \| all>` | Applies held items you approve |
 | `/deslop-reject <IDs>` | Closes held items you want left as they are |
-| `--dry-run` | Added to any command: shows the plan without changing anything |
+| `--dry-run` | Added to any editing command: shows the plan without changing anything |
 
 ## Install
 
-Copy the `slop-popper` folder into your agent's skills folder so the file ends up at `.claude/skills/slop-popper/SKILL.md` (or the same `slop-popper/SKILL.md` path wherever your coding agent loads skills from). Keep the folder name lowercase and matching the skill's `name`, or it won't install.
+Copy the whole `slop-popper` folder, including its `references` folder, into your agent's skills folder so the file ends up at `.claude/skills/slop-popper/SKILL.md` (or the same `slop-popper/SKILL.md` path wherever your coding agent loads skills from). Keep the folder name lowercase and matching the skill's `name`, or it won't install.
 
 Quick install for Claude Code, from your project folder:
 
