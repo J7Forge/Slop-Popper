@@ -5,7 +5,8 @@ description: >-
   behavior-preserving cleanup of noisy, repetitive, over-abstracted,
   over-defensive, over-commented, or weakly tested AI-generated code. `/deslop`
   runs a quick pre-commit cleanup; `/deslop-full`, `/deslop-since`,
-  `/deslop-review`, `/deslop-approve`, `/deslop-reject`, and `--dry-run` cover the rest.
+  `/deslop-review`, `/deslop-approve`, `/deslop-reject`, `--dry-run`, and
+  `--classic` cover the rest.
 ---
 # Slop Popper
 
@@ -21,9 +22,16 @@ description: >-
 | `/deslop-review` | Reviews a cleanup someone else made, no edits; gives a verdict |
 | `/deslop-approve <IDs \| all>` | Applies approved items from the saved Needs further review list |
 | `/deslop-reject <IDs>` | Closes items from that list without changing the code |
-| `--dry-run` (on any editing command) | Plan in chat only; nothing edited or written |
 
-`--review` is an alias for `/deslop-review`. A natural-language request with a target ("deslop this module") runs as `/deslop-full` on that target.
+## Flags
+
+| Flag | What it does |
+|---|---|
+| `--dry-run` | On any editing command: plan in chat only; nothing edited or written |
+| `--classic` | On `/deslop`, `/deslop-full`, or `/deslop-since` (alone or with `--dry-run`): classic mode for this run only; see Ground Rule 1 |
+| `--review` | Alias for `/deslop-review` |
+
+Flags may combine (for example `/deslop-full --classic --dry-run`). Unknown flags: stop and ask. A natural-language request with a target ("deslop this module") runs as `/deslop-full` on that target.
 
 **Do not use for:** new features, product changes, broad redesigns, formatting-only requests (use the formatter), or code whose behavior is too unclear to protect with tests or a written verification plan.
 
@@ -31,7 +39,7 @@ description: >-
 
 Every path in this skill, including paths inside reference files, is relative to the folder that holds this file. Read a file only when its condition applies:
 1. `references/no-git-no-tests.md`: first, if the target is not a git repository or has no tests. Without git, it changes the scope and replaces the save point.
-2. `references/modes.md`: for `/deslop-review` (or `--review`), `/deslop-approve`, `/deslop-reject`, or `--dry-run`.
+2. `references/modes.md`: for `/deslop-review` (or `--review`), `/deslop-approve`, `/deslop-reject`, `--dry-run`, or `--classic`.
 3. `references/tooling.md`: if the project has no linters or checkers configured.
 4. `references/catalog/` (files named in the Slop Catalog below):
    - `/deslop`: the file for each category with findings, before its pass (category 13: before listing its items).
@@ -43,8 +51,11 @@ Every path in this skill, including paths inside reference files, is relative to
 ## Ground Rules
 
 1. **Cleanup, not rewrite.** Behavior stays the same. Leave existing logic, control flow, signatures, file layout, and formatting as written unless a catalog finding needs a minimal change. When in doubt, hold it for review instead of editing.
-   - **Applied automatically:** deleting dead or duplicate code; fixing vague names (updating every caller in the same pass); removing wrappers that only pass calls through; moving code to the module it belongs in (updating imports); removing noise comments and debug output; marking deliberate catch-alls; fixing a clearly wrong comment or docstring; adding tests (except in `/deslop`, which lists them for review instead).
-   - **Held for review (needs the user's OK):** changing signatures, parameters, or return types; changing logic or behavior; reformatting whole files; swapping libraries or patterns; changing config values, IDs, or constants; renaming anything used outside the codebase (a public API, CLI flag, file format, or saved setting); deleting test-only code.
+   **Mode.** Default is careful. If the invoke includes `--classic`, use classic for this run only. Stamp the report with `Mode: careful (default)` or `Mode: classic (--classic)`. A project `DESLOP.md` or keep list that is stricter than the active mode still wins.
+   - **Applied automatically (both modes):** deleting dead or duplicate code; fixing vague names (updating every caller in the same pass); removing wrappers that only pass calls through; moving code to the module it belongs in (updating imports); removing noise comments and debug output; marking deliberate catch-alls; fixing a clearly wrong comment or docstring; adding tests (except in `/deslop`, which lists them for review instead).
+   - **Held for review in careful mode (needs the user's OK):** changing signatures, parameters, or return types; changing logic or behavior; reformatting whole files; swapping libraries or patterns; changing config values, IDs, or constants; renaming anything used outside the codebase (a public API, CLI flag, file format, or saved setting); deleting test-only code.
+   - **In classic mode only:** signatures, parameters, or return types; logic or behavior; whole-file reformats; config values, IDs, or constants; and renames used outside the codebase may be applied automatically when a catalog finding needs that minimal change and the other Ground Rules still hold (tests or the no-tests path, size limit, keep list, scope). Still hold for review in classic: swapping libraries or patterns; deleting test-only code; keep-list items; anything that is not a cleanup.
+   - **Always hold (both modes):** secrets (flag only, never copy values); keep-list items; size-limit plans until the user OKs the plan.
 2. **Lock behavior first** with the narrowest tests that cover what you will touch. If tests cannot come first, write the verification plan before editing.
 3. **Follow project conventions.** Always run the style lookup first (Workflow step 1). What it finds overrides this skill's defaults for the lines being changed, but never justifies restyling untouched code.
 4. **Delete before you add.** Reuse existing helpers and patterns; add no dependencies unless asked.
@@ -55,7 +66,7 @@ Every path in this skill, including paths inside reference files, is relative to
 
 ## Slop Catalog
 
-Classify every finding into one category before editing. Categories 1 through 12 are also the pass order and the numbers reports use; category 13 only adds review items and is never applied. Each line below is what to scan for; the category file has the full list and the fix. Rule 1 limits every fix: anything on its held-for-review list goes under Needs further review instead.
+Classify every finding into one category before editing. Categories 1 through 12 are also the pass order and the numbers reports use; category 13 only adds review items and is never applied. Each line below is what to scan for; the category file has the full list and the fix. Rule 1 limits every fix: in careful mode, anything on its held-for-review list goes under Needs further review; in classic mode, anything on its still-hold list does.
 
 1. `01-dead-code.md`: unused code, unreachable branches, stale feature flags, commented-out blocks. Test-only code is not dead: flag it for review, don't delete it.
 2. `02-duplication.md`: copy-paste logic, near-identical functions, repeated literals, helpers that redo an existing utility.
@@ -110,10 +121,12 @@ Every editing command follows these steps; the modes note where they differ.
 
 ## Report Format
 
+**Mode.** Every short report, full report, and `--dry-run` plan starts with `Mode: careful (default)` or `Mode: classic (--classic)`.
+
 **Needs further review:** every finding not applied, each with an R ID (`R1`, `R2`, and so on) and a stable key (`file:symbol`, for example `billing.py:export_invoice`). The key is the identity: an R ID stays with its key across runs, and closed IDs are retired, never reused. With no saved list (a fresh copy), numbering starts at R1. One line each: the file, what it is, and why it was held (held-for-review list, test-only code, over the size limit, or not sure it's safe). For test-only code, add its callers, replacement, references, and the lines removal would cut.
 
 **Saved list.** Every editing run saves the open Needs further review items, plus a closed list of approved and rejected keys with their retired IDs, to `.git/deslop/last-report.md` (or `<tree>.deslop/last-report.md` without git). `--dry-run` and `/deslop-review` never write it. Open items appear again in each report until they're closed or the code changes. Don't flag a rejected key again unless its code changed (see Reject in `references/modes.md`).
 
-**Short report** (`/deslop`, `/deslop-approve`, `/deslop-reject`): the save-point paths (for `/deslop`), changed files, a one-line count per category, the test result, the Needs further review list, closed items, and any kept items. Skip empty sections.
+**Short report** (`/deslop`, `/deslop-approve`, `/deslop-reject`): Mode, the save-point paths (for `/deslop`), changed files, a one-line count per category, the test result, the Needs further review list, closed items, and any kept items. Skip empty sections.
 
 **Full report** (`/deslop-full`, `/deslop-since`): sections in `references/full-report.md`.

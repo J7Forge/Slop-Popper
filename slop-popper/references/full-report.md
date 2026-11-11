@@ -1,4 +1,5 @@
 Full report sections for `/deslop-full` and `/deslop-since`, in this order:
+- **Mode:** `Mode: careful (default)` or `Mode: classic (--classic)`
 - **Style sources used** (or none found)
 - **Changed files**
 - **Findings fixed by category** (counts, with one or two examples each)

@@ -1,5 +1,12 @@
 # Changelog
 
+## v3.0 (Unreleased)
+
+- One skill folder: careful mode by default; `--classic` loosens the four OK-gates (signatures, logic/config, whole-file reformats, external renames) for that run only.
+- Split the Commands and Flags tables; `--classic` is documented with `--dry-run`.
+- Short reports, full reports, and `--dry-run` plans stamp `Mode: careful (default)` or `Mode: classic (--classic)`.
+- v4 / `--strict` deferred (no redesign yet).
+
 ## v2.0 (2026-10-31)
 
 - Split the skill into a short core `SKILL.md` and reference files under `slop-popper/references/` (command modes, the full report format, no-git and no-tests fallbacks, tooling, and one file per slop category). Agents read only the files a command needs, so common runs use fewer tokens.

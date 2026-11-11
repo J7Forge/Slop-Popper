@@ -10,18 +10,19 @@ An agent skill that cleans AI-generated slop out of working code without changin
 ## What it does
 
 - **Applies safe fixes automatically:** deleting dead or duplicate code, fixing vague names, removing wrappers that only pass calls through, moving code to the module it belongs in, and removing noise comments and debug output.
-- **Holds riskier changes for your review:** signature, logic, or config changes, public renames, whole-file reformatting, and deleting code that only tests use. Each held item gets an ID you can approve or reject.
+- **Holds riskier changes for your review (careful mode, the default):** signature, logic, or config changes, public renames, whole-file reformatting, and deleting code that only tests use. Each held item gets an ID you can approve or reject.
+- **Optional `--classic`:** for one editing run, those signature / logic-config / whole-file reformat / external-rename gates may apply when a catalog finding needs them. Still holds library swaps, test-only deletes, keep-list items, and secrets.
 - **Protects behavior:** it checks tests first and allows no new failures, works one category at a time, and stops for approval when a run gets large.
 - **Follows your project:** it reads your style guide, lint configs, and a keep list (`KEEP.md` or `.deslopkeep`) of things it must never touch.
 - **Never commits for you,** and it never copies secret values into its reports.
 
-## What's new in v2
+## What's new in v3
 
-- **Uses fewer tokens.** The skill is split into a short core `SKILL.md` plus reference files that load only when a command needs them. The core is less than half its old size.
-- **`/deslop` stops when there's nothing to clean.** With no staged or uncommitted changes, it says so and stops.
-- **`/deslop-approve` works without a saved list.** It re-scans the files the item keys name, and asks for a scope if there are none.
+- **One skill, two modes.** Careful is the default. Add `--classic` to `/deslop`, `/deslop-full`, or `/deslop-since` (works with `--dry-run`) when you want the looser gates for that run.
+- **Reports stamp the mode** so you can see which rules applied.
+- **Commands and Flags** are listed separately in the skill.
 
-See the [changelog](CHANGELOG.md) for the full list.
+See the [changelog](CHANGELOG.md) for the full list. Version numbers live on releases and git tags; install the single `slop-popper` folder.
 
 ## Commands
 
@@ -33,7 +34,15 @@ See the [changelog](CHANGELOG.md) for the full list.
 | `/deslop-review` | Reviews someone else's cleanup without editing |
 | `/deslop-approve <IDs \| all>` | Applies held items you approve |
 | `/deslop-reject <IDs>` | Closes held items you want left as they are |
+
+## Flags
+
+| Flag | What it does |
+|---|---|
 | `--dry-run` | Added to any editing command: shows the plan without changing anything |
+| `--classic` | Added to `/deslop`, `/deslop-full`, or `/deslop-since`: classic mode for that run |
+
+Example: `/deslop-full --classic --dry-run`.
 
 ## Install
 
@@ -47,7 +56,7 @@ mkdir -p .claude/skills
 cp -r Slop-Popper/slop-popper .claude/skills/
 ```
 
-Then type `/deslop` before a commit, or ask it to "deslop this module."
+Then type `/deslop` before a commit, or ask it to "deslop this module." Add `--classic` when you want the looser gates for that run.
 
 ## Works with
 
