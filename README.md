@@ -51,7 +51,7 @@ Copy the whole `slop-popper` folder, including its `references` folder, into you
 Quick install for Claude Code, from your project folder:
 
 ```
-git clone https://github.com/J7-Tech/Slop-Popper
+git clone https://github.com/J7Forge/Slop-Popper
 mkdir -p .claude/skills
 cp -r Slop-Popper/slop-popper .claude/skills/
 ```
@@ -64,7 +64,7 @@ Any language. It includes comment conventions and common checkers for Python, Ja
 
 ## Support
 
-Slop Popper is free. If it saved you some cleanup time, you can support future projects through [Ko-fi](https://ko-fi.com/A4Q728XPQ3) or [Buy Me a Coffee](https://buymeacoffee.com/j7labs). Bug reports and ideas are welcome in [Issues](https://github.com/J7-Tech/Slop-Popper/issues).
+Slop Popper is free. If it saved you some cleanup time, you can support future projects through [Ko-fi](https://ko-fi.com/A4Q728XPQ3) or [Buy Me a Coffee](https://buymeacoffee.com/j7labs). Bug reports and ideas are welcome in [Issues](https://github.com/J7Forge/Slop-Popper/issues).
 
 ## License
 
