@@ -130,3 +130,6 @@ Every editing command follows these steps; the modes note where they differ.
 **Short report** (`/deslop`, `/deslop-approve`, `/deslop-reject`): Mode, the save-point paths (for `/deslop`), changed files, a one-line count per category, the test result, the Needs further review list, closed items, and any kept items. Skip empty sections.
 
 **Full report** (`/deslop-full`, `/deslop-since`): sections in `references/full-report.md`.
+
+---
+*Skill Crafted at J7 Forge.*

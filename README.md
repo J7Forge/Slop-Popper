@@ -69,3 +69,6 @@ Slop Popper is free. If it saved you some cleanup time, you can support future p
 ## License
 
 [MIT](LICENSE)
+
+---
+*Skill Crafted at [J7 Forge](https://github.com/J7Forge).*
