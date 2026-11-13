@@ -1,6 +1,6 @@
 # Changelog
 
-## v3.0 (Unreleased)
+## v3.0 (2026-11-12)
 
 - One skill folder: careful mode by default; `--classic` loosens the four OK-gates (signatures, logic/config, whole-file reformats, external renames) for that run only.
 - Split the Commands and Flags tables; `--classic` is documented with `--dry-run`.
